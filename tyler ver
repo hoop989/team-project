@@ -1,1 +1,104 @@
+//Tyler Hooper and Gavin Clemons and October 24, 2023
+//Group Project
 
+package week6tasks;
+
+import java.io.*;
+import java.util.Scanner;
+
+public class Task1
+{
+    public static double calcAverage(int[] scores) 
+    {
+    	//Initialize sum at 0, then add scores
+        int sum = 0;
+        for (int score : scores) 
+        {
+            sum += score;
+        }
+        //Formula to find average of the 5 scores
+        return (double) sum / scores.length;
+    }
+    //Assign letter grade to numerical scores
+    public static char determineGrade(int score) 
+    {
+        if (score >= 90) 
+        {
+            return 'A';
+        } 
+        else if (score >= 80) 
+        {
+            return 'B';
+        } 
+        else if (score >= 70) 
+        {
+            return 'C';
+        } 
+        else if (score >= 60) 
+        {
+            return 'D';
+        } 
+        else 
+        {
+            return 'F';
+        }
+    }
+
+    public static void main(String[] args) 
+    {
+        // Input: Read test scores from a file
+        String filename = "/Users/tylerhooper/eclipse-workspace/Week6/src/week6tasks/text_scores.txt";
+        try 
+        {
+            Scanner scanner = new Scanner(new File(filename));
+            int[] scores = new int[5];
+            //Control loop to scan 5 lines
+            for (int i = 0; i < 5; i++) 
+            {
+                if (scanner.hasNextInt()) 
+                {
+                    scores[i] = scanner.nextInt();
+                } 
+                else 
+                {
+                	//Error message if file doesn't contain 5 scores. Spaces between grades will cause error.
+                    System.out.println("Error: The file does not contain enough scores.");
+                    //Exit program
+                    System.exit(1);
+                }
+            }
+
+            // Calculate the average score
+            double averageScore = calcAverage(scores);
+
+            // Output: Determine what the letter grades and write it to a file
+            String outputFilename = filename.replace(".txt", "<filename>_rev.txt");
+            try (PrintWriter writer = new PrintWriter(outputFilename)) 
+            {
+            	//Run loop 5 times for 5 user inputs
+                for (int i = 0; i < 5; i++) 
+                {
+                    char grade = determineGrade(scores[i]);
+                    writer.println("Score: " + scores[i] + ", Grade: " + grade);
+                }
+            //Exception for if there is an error writing output file
+            } catch (IOException e) 
+            {
+                System.out.println("Error writing to the output file.");
+            }
+
+            // Display results
+            for (int i = 0; i < 5; i++) 
+            {
+                char grade = determineGrade(scores[i]);
+                System.out.println("Test " + (i + 1) + ": Score = " + scores[i] + ", Grade = " + grade);
+            }
+            //Format for 2 decimal places for the numerical test score output
+            System.out.println("Average Test Score: " + String.format("%.2f", averageScore));
+        //Exception for if file is not found
+        } catch (FileNotFoundException e) 
+        {
+            System.out.println("Error: File not found.");
+        }
+    }
+}
